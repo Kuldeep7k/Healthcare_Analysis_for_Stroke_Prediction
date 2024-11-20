@@ -20,7 +20,7 @@ The primary goal of this project is to develop a machine learning model that cla
 
 ## Project Structure
 
-    stroke-patient-healthcare-analysis/
+    stroke_patient_healthcare_analysis/
     ├── stroke_data.csv              # Raw dataset used for analysis
     ├── stroke_analysis.ipynb        # Jupyter notebook for analysis, data processing, and model building
     ├── requirements.txt             # Python dependencies
@@ -38,7 +38,7 @@ The primary goal of this project is to develop a machine learning model that cla
     
 2.  Navigate into the project directory:
     ```cmd
-    cd stroke-patient-healthcare-analysis
+    cd stroke_patient_healthcare_analysis
     ```
 
 3.  Install required packages:
