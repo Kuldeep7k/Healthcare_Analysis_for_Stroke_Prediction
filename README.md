@@ -75,8 +75,6 @@ The model's performance is evaluated using the following metrics:
 # Conclusion
 After evaluating multiple machine learning models, we found that Logistic Regression performed best in predicting stroke occurrences with high accuracy. However, during further evaluation, it was observed that the model was not correctly predicting stroke cases but instead falsely predicting non-stroke cases. This issue arose because the model was highly biased towards the majority class (non-stroke cases).
 
-The primary goal of this project was to develop a deep learning model to classify patient data and predict the likelihood of a stroke. However, due to the small size of the dataset, we opted to build a machine learning model instead of a deep learning model. Given the limited dataset, a deep learning model might not have outperformed the machine learning approach, and the results would likely have been similar.
-
 **Future improvements** may involve addressing this bias, such as using techniques like resampling, adjusting class weights, or exploring more advanced models.
 
 
