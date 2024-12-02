@@ -22,7 +22,6 @@ The primary goal of this project was to develop a deep learning model to classif
 ## Project Structure
 
     stroke_patient_healthcare_analysis/
-    ├── stroke_data.csv              # Raw dataset used for analysis
     ├── stroke_analysis.ipynb        # Jupyter notebook for analysis, data processing, and model building
     ├── requirements.txt             # Python dependencies
     └── README.md                    # This file
