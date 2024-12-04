@@ -8,43 +8,87 @@ import numpy as np
 # Suppress warnings to keep the output clean
 warnings.filterwarnings('ignore')
 
-# Custom Logistic Regression Class
 class LogisticRegression:
+    # Initialize learning rate (lr) and number of iterations (n_iters)
     def __init__(self, lr=0.001, n_iters=1000):
-        self.lr = lr  # Learning rate
-        self.n_iters = n_iters  # Number of iterations
-        self.weights = None  # Weights
-        self.bias = None  # Bias
+        self.lr = lr   # Learning rate (α)
+        self.n_iters = n_iters  # Number of iterations for gradient descent
+        self.weights = None  # Initialize weights (slopes)
+        self.bias = None  # Initialize bias (intercept)
 
+    # Sigmoid function to map predictions to probabilities between 0 and 1
     def sigmoid(self, z):
+        # Applying the sigmoid function: y_pred = 1 / (1 + exp(-z))
         return 1 / (1 + np.exp(-z))
 
-    def train(self, X, y):
+    # Function to train the logistic regression model using X_train and y_train
+    def train(self, X, y): 
         num_samples, num_features = X.shape
-        self.weights = np.zeros(num_features)
-        self.bias = 0
+        self.weights = np.zeros(num_features)  # Initialize weights to zero
+        self.bias = 0  # Initialize bias to zero
 
         for _ in range(self.n_iters):
+            
+            # Calculate the linear combination of inputs and weights: z = X * weights + bias
             model = np.dot(X, self.weights) + self.bias
+            
+            # Transforming the linear output into probabilities using the sigmoid function
             y_pred = self.sigmoid(model)
 
-            dw = (1 / num_samples) * np.dot(X.T, (y_pred - y))
-            db = (1 / num_samples) * np.sum(y_pred - y)
+            # Gradient calculation for the weights (dw): 
+            # dw = (1 / num_samples) * X.T * (y_pred - y)
+            dw = (1 / num_samples) * np.dot(X.T, (y_pred - y)) 
+            
+            # Gradient calculation for the bias (db):
+            # db = (1 / num_samples) * sum(y_pred - y)
+            db = (1 / num_samples) * np.sum(y_pred - y) 
 
+            # Update the weights and bias using the gradients and learning rate:
+            # weights := weights - learning_rate * dw, bias := bias - learning_rate * db
             self.weights -= self.lr * dw
             self.bias -= self.lr * db
 
+    # Function to predict labels based on input test data (X_test)
     def predict(self, X):
-        linear_model = np.dot(X, self.weights) + self.bias
-        y_pred = self.sigmoid(linear_model)
-        return (y_pred >= 0.5).astype(int)
+        # Calculate the linear output from the input data and learned weights: z = X * weights + bias
+        linear_model = np.dot(X, self.weights) + self.bias 
+        
+        # Transform the linear output into predicted probabilities using the sigmoid function
+        y_pred = self.sigmoid(linear_model)  # Applying sigmoid to get probabilities: y_pred = 1 / (1 + exp(-z))
 
+        # Classify based on threshold 0.5: if probability >= 0.5, classify as 1, else 0
+        predictions = []
+        for p in y_pred:
+            if p >= 0.5:
+                predictions.append(1)  # Classify as 1 if probability is >= 0.5
+            else:
+                predictions.append(0)  # Classify as 0 if probability is < 0.5
+
+        return np.array(predictions)  # Return the final binary predictions as an array
+    
+    # Function to calculate accuracy as the proportion of correct predictions using X_test and y_test
+    def score(self, X, y):
+        # Predict labels for the input data
+        y_pred = self.predict(X) 
+        
+        # Calculate accuracy as the percentage of correct predictions
+        accuracy = np.mean(y_pred == y)  # Accuracy = (correct predictions) / (total predictions)
+        
+        return accuracy 
+
+    # Function to return predicted probabilities for the positive class (class 1) using X_test
     def predict_proba(self, X):
-        linear_model = np.dot(X, self.weights) + self.bias
-        probabilities = self.sigmoid(linear_model)
-        return [(1 - p, p) for p in probabilities]
+        # Compute the linear combination of inputs and weights
+        linear_model = np.dot(X, self.weights) + self.bias 
 
-# Set up Streamlit app
+        # Get probability of positive class (class 1)
+        probabilities = self.sigmoid(linear_model) 
+
+        # Return both probabilities (negative class, positive class) 
+        return [(1 - p, p) for p in probabilities]  
+
+
+# Set page configuration
 st.set_page_config(page_title="Stroke Prediction Web App")
 
 # Title of the Web Application
@@ -52,84 +96,60 @@ st.title("Stroke Prediction Web App")
 
 st.markdown(
     """
-    This application uses a custom machine learning model to predict the likelihood of stroke.
-    **Steps to use:**
-    1. Enter the required input fields in the sidebar.
-    2. Click 'Predict Stroke Risk' to view results.
+    This application uses machine learning to predict the likelihood of a person having a stroke based on various health and lifestyle features.
+    
+    **How to use this app:**
+    - Enter relevant data such as age, BMI, gender, hypertension status, and more in the input fields.
+    - The app will predict the probability of stroke risk.
+    - Consult a healthcare provider if the app detects a high risk of stroke.
     """
 )
 
-# Function to load the trained model
+# Function to load the model
 def load_model(model_filename='logistic_reg_model.pkl'):
+    # Check if the model file exists
     if not os.path.exists(model_filename):
         st.error(f"Error: Model file '{model_filename}' not found!")
         return None, False
 
-    try:
-        # Load the model using joblib
-        log_reg_model = joblib.load(model_filename)
-        if isinstance(log_reg_model, LogisticRegression):
-            st.success("Model loaded successfully!")
-            return log_reg_model, True
-        else:
-            st.error("Error: Loaded object is not a LogisticRegression instance.")
-            return None, False
-    except Exception as e:
-        st.error(f"Error loading model: {str(e)}")
+    # Load the model using joblib
+    log_reg_model = joblib.load(model_filename)
+
+    # Check if the model is loaded properly
+    if log_reg_model is not None:
+        st.success("Model loaded successfully!")
+        return log_reg_model, True
+    else:
+        st.error("Error: Failed to load the model.")
         return None, False
 
 # Attempt to load the model
 log_reg_model, model_trained = load_model()
 
-# Load the dataset and preprocess it
-@st.cache_data
-def load_data():
-    url = "https://drive.google.com/uc?export=download&id=1XyhVIZaKYZczlM2alun_fofilqTBq_9c"
-    df = pd.read_csv(url)
+# Display whether the model was loaded successfully
+if model_trained:
+    st.write("Model is ready to make predictions!")
+else:
+    st.warning("Model not loaded. Please ensure the model file is accessible and try again.")
 
-    # Data Cleaning and Encoding
-    df['bmi'].fillna(df['bmi'].median(), inplace=True)
-    df['gender'] = df['gender'].apply(lambda x: 1 if x == 'Male' else 0)
-    df['ever_married'] = df['ever_married'].apply(lambda x: 1 if x == 'Yes' else 0)
-    df['Residence_type'] = df['Residence_type'].apply(lambda x: 1 if x == 'Urban' else 0)
-    df = pd.get_dummies(df, columns=['work_type', 'smoking_status'], drop_first=False)
+# User input fields on the main page
+st.header("Enter the Input Features")
 
-    # Transform specified columns to integer type
-    columns_to_transform = [
-        'work_type_Govt_job', 'work_type_Never_worked', 'work_type_Private',
-        'work_type_Self-employed', 'work_type_children', 'smoking_status_Unknown',
-        'smoking_status_formerly smoked', 'smoking_status_never smoked',
-        'smoking_status_smokes'
-    ]
-    df[columns_to_transform] = df[columns_to_transform].astype(int)
+# Create two columns for input fields
+col1, col2 = st.columns(2)
 
-    # Split data into features and target
-    X = df.drop(columns=['id', 'stroke'])
-    y = df['stroke']
-    return df, X, y
-
-# Load the data
-df, X, y = load_data()
-
-# Display dataset preview
-st.write("### Dataset Preview")
-st.dataframe(df.head())
-
-# Sidebar inputs
-st.sidebar.header("Input Features")
-
-# Sidebar columns for inputs
-col1, col2 = st.sidebar.columns(2)
-
+# First column for inputs
 with col1:
     age = st.number_input("Age", min_value=1, max_value=120, step=1)
     hypertension = st.selectbox("Hypertension (0: No, 1: Yes)", [0, 1])
     heart_disease = st.selectbox("Heart Disease (0: No, 1: Yes)", [0, 1])
     avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, step=0.1)
     bmi = st.number_input("BMI", min_value=0.0, step=0.1)
-    gender = st.selectbox("Gender", ["Male", "Female"])
+    
 
+# Second column for inputs
 with col2:
+    gender = st.selectbox("Gender", ["Male", "Female"])
     residence_type = st.selectbox("Residence Type", ["Urban", "Rural"])
     work_type = st.selectbox("Work Type", ["Private", "Self-employed", "Govt_job", "children", "Never_worked"])
     smoking_status = st.selectbox("Smoking Status", ["formerly smoked", "never smoked", "smokes", "Unknown"])
@@ -157,20 +177,20 @@ input_data = {
 }
 
 # Convert the input data into a DataFrame
-input_df = pd.DataFrame([input_data], columns=X.columns).fillna(0)
+input_df = pd.DataFrame([input_data])
 
-# Prediction button
+# Prediction
 if st.button("Predict Stroke Risk"):
     if not model_trained:
-        st.warning("Model is not loaded. Please train or load the model.")
+        st.warning("Please train or load the model first!")
     else:
-        # Predict probabilities
+        # Get prediction probability for stroke (class 1)
         prediction_proba = log_reg_model.predict_proba(input_df)
-        stroke_probability = prediction_proba[0][1] * 100
+        stroke_probability = prediction_proba[0][1] * 100  # Extract the probability for the positive class
         st.write(f"### Stroke Probability: {stroke_probability:.2f}%")
 
-        # Show risk level
-        if stroke_probability >= 50:
-            st.error("High risk of stroke detected! Consult a healthcare professional.")
+        # Show risk level based on prediction
+        if prediction_proba[0][1] >= 0.5:
+            st.error("High risk of stroke detected! Recommend medical consultation.")
         else:
             st.success("Low risk of stroke detected.")
