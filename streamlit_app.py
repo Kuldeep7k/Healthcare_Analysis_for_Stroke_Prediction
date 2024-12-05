@@ -97,13 +97,22 @@ st.title("Stroke Prediction Web App")
 st.markdown(
     """
     This application uses machine learning to predict the likelihood of a person having a stroke based on various health and lifestyle features.
-    
+
     **How to use this app:**
-    - Enter relevant data such as age, BMI, gender, hypertension status, and more in the input fields.
-    - The app will predict the probability of stroke risk.
-    - Consult a healthcare provider if the app detects a high risk of stroke.
+    - Enter the relevant information in the input fields, such as age, BMI, gender, hypertension status, and more.
+    - The app will predict the likelihood of stroke risk based on the provided data.
+    - Once the prediction is made, the app will display the stroke risk percentage and its associated risk level.
+    - If the app detects a high risk of stroke, consult a healthcare provider for further assessment.
+
+    **Stroke Risk Levels:**
+    - **High risk**: A stroke probability of 80% or more.
+    - **Moderate risk**: A stroke probability between 50% and 80%.
+    - **Low risk**: A stroke probability below 50%.
+
+    **Important:** If the app shows a high risk of stroke, please seek immediate medical consultation.
     """
 )
+
 
 # Function to load the model
 def load_model(model_filename='logistic_reg_model.pkl'):
@@ -189,8 +198,10 @@ if st.button("Predict Stroke Risk"):
         stroke_probability = prediction_proba[0][1] * 100  # Extract the probability for the positive class
         st.write(f"### Stroke Probability: {stroke_probability:.2f}%")
 
-        # Show risk level based on prediction
-        if prediction_proba[0][1] >= 0.5:
-            st.error("High risk of stroke detected! Recommend medical consultation.")
+        if stroke_probability >= 80:
+            st.error(f"High risk of stroke detected! Recommend medical consultation.")
+        elif 50 <= stroke_probability < 80:
+            st.warning(f"Moderate risk of stroke.")
         else:
-            st.success("Low risk of stroke detected.")
+            st.success(f"Low risk of stroke detected.")
+
