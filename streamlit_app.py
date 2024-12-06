@@ -102,7 +102,6 @@ st.markdown(
     - Enter the relevant information in the input fields, such as age, BMI, gender, hypertension status, and more.
     - The app will predict the likelihood of stroke risk based on the provided data.
     - Once the prediction is made, the app will display the stroke risk percentage and its associated risk level.
-    - If the app detects a high risk of stroke, consult a healthcare provider for further assessment.
 
     **Stroke Risk Levels:**
     - **High risk**: A stroke probability of 80% or more.
