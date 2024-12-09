@@ -150,10 +150,11 @@ col1, col2 = st.columns(2)
 with col1:
     gender = st.radio("Gender", ["Male", "Female"])
     age = st.number_input("Age", min_value=1, max_value=120, step=1)
-    hypertension = st.radio("Hypertension (0: No, 1: Yes)", [0, 1])
-    heart_disease = st.radio("Heart Disease (0: No, 1: Yes)", [0, 1])
     avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, step=0.1)
     bmi = st.number_input("BMI", min_value=0.0, step=0.1)
+    hypertension = st.radio("Hypertension (0: No, 1: Yes)", [0, 1])
+    heart_disease = st.radio("Heart Disease (0: No, 1: Yes)", [0, 1])
+    
     
 
 # Second column for inputs
