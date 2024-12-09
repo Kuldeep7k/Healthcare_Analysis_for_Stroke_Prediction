@@ -148,50 +148,50 @@ col1, col2 = st.columns(2)
 
 # First column for inputs
 with col1:
+    gender = st.radio("Gender", ["Male", "Female"])
     age = st.number_input("Age", min_value=1, max_value=120, step=1)
-    hypertension = st.selectbox("Hypertension (0: No, 1: Yes)", [0, 1])
-    heart_disease = st.selectbox("Heart Disease (0: No, 1: Yes)", [0, 1])
+    hypertension = st.radio("Hypertension (0: No, 1: Yes)", [0, 1])
+    heart_disease = st.radio("Heart Disease (0: No, 1: Yes)", [0, 1])
     avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, step=0.1)
     bmi = st.number_input("BMI", min_value=0.0, step=0.1)
     
 
 # Second column for inputs
 with col2:
-    gender = st.selectbox("Gender", ["Male", "Female"])
-    residence_type = st.selectbox("Residence Type", ["Urban", "Rural"])
-    work_type = st.selectbox("Work Type", ["Private", "Self-employed", "Govt_job", "children", "Never_worked"])
-    smoking_status = st.selectbox("Smoking Status", ["formerly smoked", "never smoked", "smokes", "Unknown"])
-    ever_married = st.selectbox("Ever Married (0: No, 1: Yes)", [0, 1])
+    residence_type = st.radio("Residence Type", ["Urban", "Rural"])
+    work_type = st.radio("Work Type", ["Private", "Self-employed", "Govt_job", "children", "Never_worked"])
+    smoking_status = st.radio("Smoking Status", ["formerly smoked", "never smoked", "smokes", "Unknown"])
+    ever_married = st.radio("Ever Married (0: No, 1: Yes)", [0, 1])
 
-# Prepare input data for prediction
-input_data = {
-    "age": age,
-    "hypertension": hypertension,
-    "heart_disease": heart_disease,
-    "avg_glucose_level": avg_glucose_level,
-    "bmi": bmi,
-    "gender": 1 if gender == "Male" else 0,
-    "ever_married": ever_married,
-    "Residence_type": 1 if residence_type == "Urban" else 0,
-    "work_type_Private": 1 if work_type == "Private" else 0,
-    "work_type_Self-employed": 1 if work_type == "Self-employed" else 0,
-    "work_type_Govt_job": 1 if work_type == "Govt_job" else 0,
-    "work_type_children": 1 if work_type == "children" else 0,
-    "work_type_Never_worked": 1 if work_type == "Never_worked" else 0,
-    "smoking_status_formerly smoked": 1 if smoking_status == "formerly smoked" else 0,
-    "smoking_status_never smoked": 1 if smoking_status == "never smoked" else 0,
-    "smoking_status_smokes": 1 if smoking_status == "smokes" else 0,
-    "smoking_status_Unknown": 1 if smoking_status == "Unknown" else 0,
-}
-
-# Convert the input data into a DataFrame
-input_df = pd.DataFrame([input_data])
-
-# Prediction
+# Validation to ensure all fields are filled
 if st.button("Predict Stroke Risk"):
-    if not model_trained:
-        st.warning("Please train or load the model first!")
+    if not all([age, avg_glucose_level, bmi]):
+        st.warning("Please fill in all the input fields!")
     else:
+        # Prepare input data for prediction
+        input_data = {
+            "age": age,
+            "hypertension": hypertension,
+            "heart_disease": heart_disease,
+            "avg_glucose_level": avg_glucose_level,
+            "bmi": bmi,
+            "gender": 1 if gender == "Male" else 0,
+            "ever_married": ever_married,
+            "Residence_type": 1 if residence_type == "Urban" else 0,
+            "work_type_Private": 1 if work_type == "Private" else 0,
+            "work_type_Self-employed": 1 if work_type == "Self-employed" else 0,
+            "work_type_Govt_job": 1 if work_type == "Govt_job" else 0,
+            "work_type_children": 1 if work_type == "children" else 0,
+            "work_type_Never_worked": 1 if work_type == "Never_worked" else 0,
+            "smoking_status_formerly smoked": 1 if smoking_status == "formerly smoked" else 0,
+            "smoking_status_never smoked": 1 if smoking_status == "never smoked" else 0,
+            "smoking_status_smokes": 1 if smoking_status == "smokes" else 0,
+            "smoking_status_Unknown": 1 if smoking_status == "Unknown" else 0,
+        }
+
+        # Convert the input data into a DataFrame
+        input_df = pd.DataFrame([input_data])
+
         # Get prediction probability for stroke (class 1)
         prediction_proba = log_reg_model.predict_proba(input_df)
         stroke_probability = prediction_proba[0][1] * 100  # Extract the probability for the positive class
@@ -203,4 +203,3 @@ if st.button("Predict Stroke Risk"):
             st.warning(f"Moderate risk of stroke.")
         else:
             st.success(f"Low risk of stroke detected.")
-
