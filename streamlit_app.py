@@ -201,3 +201,11 @@ if st.button("Predict Stroke Risk"):
             st.warning(f"Moderate risk of stroke.")
         else:
             st.success(f"Low risk of stroke detected.")
+
+        st.markdown(
+            """
+            **Note:**
+            - Our model is biased toward predicting "no stroke" and may not be accurate for detecting high stroke risks.
+            - Please consult with a healthcare professional for a more reliable assessment.
+            """
+        )
