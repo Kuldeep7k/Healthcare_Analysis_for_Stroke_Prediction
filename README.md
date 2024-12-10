@@ -108,6 +108,39 @@ After evaluating multiple machine learning models, we found that Logistic Regres
 - Incorporating additional patient features to enhance model accuracy.
 - Enhancing the Streamlit app to include interactive feature importance visualizations and real-time data analysis.
 
+# References
+
+## Libraries
+
+The following libraries were used in this project:
+
+- [NumPy](https://numpy.org/) 
+- [Pandas](https://pandas.pydata.org/) 
+- [Matplotlib](https://matplotlib.org/) 
+- [Seaborn](https://seaborn.pydata.org/) 
+- [Scikit-learn](https://scikit-learn.org/) 
+- [Jupyter](https://jupyter.org/) 
+- [Streamlit](https://streamlit.io/) 
+- [Joblib](https://joblib.readthedocs.io/) 
+
+## Images
+
+1. Logistic Function Formula:
+   ![Logistic Function](http://faculty.cas.usf.edu/mbrannick/regression/gifs/lo4.gif)  
+   Source: [USF - Faculty](http://faculty.cas.usf.edu/mbrannick/regression/gifs/lo4.gif)
+
+2. Ridge Regression Formula:
+   ![Ridge Regression](https://miro.medium.com/v2/resize:fit:720/format:webp/1*7WR8ORB7cHNOJYZRBU5a1Q.png)  
+   Source: [Medium](https://miro.medium.com/v2/resize:fit:720/format:webp/1*7WR8ORB7cHNOJYZRBU5a1Q.png)
+
+3. Lasso Regression Formula:
+   ![Lasso Regression](https://miro.medium.com/v2/resize:fit:720/format:webp/1*Pbf-P0FjRg3VJdIhSuqeUg.png)  
+   Source: [Medium](https://miro.medium.com/v2/resize:fit:720/format:webp/1*Pbf-P0FjRg3VJdIhSuqeUg.png)
+
+4. Linear Regression Formula:
+   ![Linear Regression](https://vtupulse.com/wp-content/uploads/2021/07/image-30.png)  
+   Source: [VTU Pulse](https://vtupulse.com/wp-content/uploads/2021/07/image-30.png)
+
 
 ## License
 This project is licensed under the MIT License - [click here](https://github.com/Kuldeep7k/Healthcare_Analysis_for_Stroke_Prediction/blob/main/LICENSE)  see the LICENSE file for details.
