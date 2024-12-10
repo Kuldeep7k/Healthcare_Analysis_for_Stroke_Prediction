@@ -1,12 +1,9 @@
 import streamlit as st
 import pandas as pd
 import joblib
-import warnings
 import os
 import numpy as np
 
-# Suppress warnings to keep the output clean
-warnings.filterwarnings('ignore')
 
 class LogisticRegression:
     # Initialize learning rate (lr) and number of iterations (n_iters)
